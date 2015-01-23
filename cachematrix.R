@@ -1,14 +1,16 @@
 # creates a special purpose object (extended matrix) from an R matrix
 # this "extended matrix" can hold a second matrix in a scoped cache variable called "mym"
 makeCacheMatrix<-function(m=matrix()) {
-  mym <- NULL
+  # myInverse and m below are "scoped" variables, not directly accessible from calling environment
+  myInverse <- NULL
+  # set is used to set a NEW matrix; potentially existing inverse are reset
   set <- function (y) {
       m<<-y
-      mym <<- NULL
+      myInverse <<- NULL
   }
   get <- function () m
-  setinverse <- function (invmatrix) mym <<-invmatrix
-  getinverse <- function () mym
+  setinverse <- function (invmatrix) myInverse <<-invmatrix
+  getinverse <- function () myInverse
   list (set=set, get=get,setinverse=setinverse,getinverse=getinverse)
   
 }
@@ -28,7 +30,7 @@ cacheSolve <- function(matrixEx,...) {
   inv
 }
 
-#Extra fct to test if the process works woth above defined function
+#Extra fct to test if the process works with above defined function
 testCachingOfInv <- function () {
   message ("creating sample matrix ...")
   somedata<-rbind(1:3,0:2,c(0,0,5))
